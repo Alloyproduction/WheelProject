@@ -3,31 +3,25 @@
 from odoo import models, fields, api, tools
 
 
-class AccountInvoice(models.Model):
-    _inherit = 'account.invoice'
-    source = fields.Char(compute="get_source_value")
-
-    @api.depends('origin')
-    def get_source_value(self):
-        if self.origin:
-            sale_id = self.env['sale.order'].search([('name', '=', self.origin)])
-            if sale_id:
-                self.source = sale_id.source
-
-
-class SaleOrder(models.Model):
-    _inherit = 'sale.order'
-    source = fields.Char()
-    is_person = fields.Boolean(compute="get_source_type")
-
-    @api.depends('partner_id')
-    def get_source_type(self):
-        if self.partner_id:
-            for record in self:
-                if record.partner_id.company_type == 'person':
-                    record.is_person = True
-                else:
-                    record.is_person = False
+# class SaleReport(models.Model):
+#     _inherit = 'sale.report'
+#     project_id = fields.Many2one('project.project', store=True)
+#
+#     # @api.depends('order_id')
+#     # def get_project_sales(self):
+#     #     self.project_id = self.order_id.id
+#
+#     @api.model_cr
+#     def init(self):
+#         rec = super(SaleReport, self).init()
+#         tools.drop_view_if_exists(self._cr, 'sale_report')
+#         x = self._cr.execute("""
+#                     create or replace view sale_order as (
+#                         select
+#                             s.name from sale_order s
+#                     )""")
+#         print("::::::::,", x)
+#         return rec
 
 
 class ProductTemplate(models.Model):
