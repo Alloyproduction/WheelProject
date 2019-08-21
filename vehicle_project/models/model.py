@@ -492,10 +492,20 @@ class InheritSale(models.Model):
                     tax_list.append(tax.id)
                 for analytic_accounttag in line.analytic_tag_ids:
                     analytic_account_tag.append(analytic_accounttag.id)
-
+                name1 = ''
+                name2 = ''
+                if self.vehicle.brand_id.name:
+                    name1 += '-' + self.vehicle.brand_id.name + '-'
+                else:
+                    name1 = ''
+                if self.vehicle.name:
+                    name2 += self.vehicle.name + '-'
+                else:
+                    name2 = ''
                 task = self.env['project.task'].create(
-                    {'name': line.product_id.name + '-' + str(self.x_studio_field_DuczH.brand_id.name) + '-' + str(
-                        self.x_studio_field_DuczH.name) + '-' + self.name, 'sale': self.id, 'stage_id': stage_id,
+                    {'name': line.product_id.name + name1 + name2 + self.name,
+                     'sale': self.id,
+                     'stage_id': stage_id,
                      'project_id': self.project.id, 'date_assign': fields.Datetime.now(),
                      'date_deadline': fields.Date.today() + timedelta(hours=90)})
 
